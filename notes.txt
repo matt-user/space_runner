@@ -1,0 +1,10 @@
+# space game
+# first level is spaceship running from police at intergalactic mall
+# spaceship flies towards the right
+# ship can fly up, down, left, right
+# enemies come from the right
+# eventually a boss
+# obstacles on the way?
+
+TODO
+put player and enemy in separate classes
