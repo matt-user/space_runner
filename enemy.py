@@ -1,4 +1,6 @@
 import pygame
+import random
+import config
 
 # Enemy class that tries to destroy user
 class Enemy(pygame.sprite.Sprite):

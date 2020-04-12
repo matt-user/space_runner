@@ -1,8 +1,6 @@
 # spaceship game
 
-import os
 import pygame
-import random
 import config
 
 from player import Player

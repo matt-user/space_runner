@@ -12,18 +12,43 @@ from pygame.locals import (
 
 # Player class that user controls
 class Player(pygame.sprite.Sprite):
+	# class constants
+	ANIMATION_DELAY = 10
+
 	def __init__(self):
 		super(Player, self).__init__()
-		#self.surf = pygame.Surface((30, 45))
-		self.surf = get_image(os.path.join('assets', 'space_ship_v1.png'))
-		#self.surf.fill((255, 255, 255))
+		# load all of the players animations
+		image_folder_path = os.path.join('assets', 'player')
+		image_files = [os.path.join(image_folder_path, f) for f in os.listdir(image_folder_path)]
+		self.images = [get_image(f) for f in image_files]
+		self.image_index = 0
+		self.image_timer = 0
+		self.surf = self.images[self.image_index]
 		self.rect = self.surf.get_rect(
 			center=(
 				config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT
 			)
 		)
 
+
 	def update(self, pressed_keys):
+		"""Updates all of the player's information"""
+		self.update_animation()
+		self.update_movement(pressed_keys)
+		
+	
+	def update_animation(self):
+		"""Update player animation."""
+		self.image_timer += 1
+		if self.image_timer == Player.ANIMATION_DELAY:
+			self.image_index += 1
+			self.image_timer = 0
+		if self.image_index == len(self.images):
+			self.image_index = 0
+		self.surf = self.images[self.image_index]
+
+	def update_movement(self, pressed_keys):
+		"""Update player movement based on pressed keys"""
 		# update the players movement based on the pressed keys
 		if pressed_keys[K_w]:
 			self.rect.move_ip(0, -5)
