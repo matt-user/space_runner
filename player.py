@@ -2,6 +2,7 @@ import os
 import pygame
 import config
 from utility import get_image
+from animation import Animation
 
 from pygame.locals import (
 	K_w,
@@ -14,16 +15,14 @@ from pygame.locals import (
 class Player(pygame.sprite.Sprite):
 	# class constants
 	ANIMATION_DELAY = 10
+	X_SPEED = 4
+	Y_SPEED = 4
 
 	def __init__(self):
-		super(Player, self).__init__()
+		super().__init__()
 		# load all of the players animations
-		image_folder_path = os.path.join('assets', 'player')
-		image_files = [os.path.join(image_folder_path, f) for f in os.listdir(image_folder_path)]
-		self.images = [get_image(f) for f in image_files]
-		self.image_index = 0
-		self.image_timer = 0
-		self.surf = self.images[self.image_index]
+		self.animation = Animation(Player.ANIMATION_DELAY, 'assets', 'player')
+		self.surf = self.animation.get_image()
 		self.rect = self.surf.get_rect(
 			center=(
 				config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT
@@ -33,36 +32,28 @@ class Player(pygame.sprite.Sprite):
 
 	def update(self, pressed_keys):
 		"""Updates all of the player's information"""
-		self.update_animation()
+		self.surf = self.animation.next_animation()
 		self.update_movement(pressed_keys)
-		
-	
-	def update_animation(self):
-		"""Update player animation."""
-		self.image_timer += 1
-		if self.image_timer == Player.ANIMATION_DELAY:
-			self.image_index += 1
-			self.image_timer = 0
-		if self.image_index == len(self.images):
-			self.image_index = 0
-		self.surf = self.images[self.image_index]
+
 
 	def update_movement(self, pressed_keys):
 		"""Update player movement based on pressed keys"""
 		# update the players movement based on the pressed keys
 		if pressed_keys[K_w]:
-			self.rect.move_ip(0, -5)
+			self.rect.move_ip(0, -Player.X_SPEED)
 		if pressed_keys[K_s]:
-			self.rect.move_ip(0, 5)
+			self.rect.move_ip(0, Player.X_SPEED)
 		if pressed_keys[K_a]:
-			self.rect.move_ip(-5, 0)
+			self.rect.move_ip(-Player.Y_SPEED, 0)
 		if pressed_keys[K_d]:
-			self.rect.move_ip(5, 0)
+			self.rect.move_ip(Player.Y_SPEED, 0)
+		self.check_player_bounds()
 
-		# keep the player on the screen
+	def check_player_bounds(self):
+		"""Keep the player on the screen."""
 		if self.rect.left < 0:
 			self.rect.left = 0
-		if self.rect.right > config.SCREEN_HEIGHT:
+		if self.rect.right > config.SCREEN_WIDTH:
 			self.rect.right = config.SCREEN_WIDTH
 		if self.rect.top <= 0:
 			self.rect.top = 0
