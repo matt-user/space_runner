@@ -1,11 +1,13 @@
 # spaceship game
 
+import os
+
 import pygame
 import config
 
-from player import Player
 from projectile import Projectile
-from enemy import Enemy
+from model import Model
+from level_handler import Level_Handler
 
 from pygame.locals import (
 	KEYDOWN,
@@ -13,31 +15,18 @@ from pygame.locals import (
 	QUIT
 )
 
-def add_to_sprite_groups(sprite, *groups):
-	"""Add the sprite to all of the groups provided."""
-	for group in groups:
-		group.add(sprite)
-
-
 # main game loop
 def main():
+	os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (config.X_WIN_POS, config.Y_WIN_POS)
 	pygame.init()
 	pygame.display.set_caption("Space Runner")
 	screen = pygame.display.set_mode((config.SCREEN_WIDTH, config.SCREEN_HEIGHT))
-
-	# Custom event for adding new enemy
-	ADDENEMY = pygame.USEREVENT + 1
-	pygame.time.set_timer(ADDENEMY, 250)
-
-	player = Player()
-
-	# Create group to hold enemies for collision detection and position updates
-	enemies = pygame.sprite.Group()
-	# Create group to hold bullets for collision detection and position updates
-	projectiles = pygame.sprite.Group()
-	# Create group to hold all sprites for rendering
-	all_sprites = pygame.sprite.Group()
-	all_sprites.add(player)
+	# Custom Events!
+	# First level event
+	FIRSTLEVEL = pygame.USEREVENT + 1
+	# Add the first level event to the event queue
+	pygame.time.set_timer(FIRSTLEVEL, 1000)
+	level_handler = Level_Handler()
 	# game constants
 	DELAY_TIME = 10
 	# game variables
@@ -45,47 +34,33 @@ def main():
 	running = True
 	while running:
 		pygame.time.delay(DELAY_TIME)
-
 		# handle events
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				running = False
-			elif event.type == ADDENEMY:
-				# Create new enemy and add it to the appropriate groupds
-				new_enemy = Enemy()
-				add_to_sprite_groups(new_enemy, enemies, all_sprites)
+			elif event.type == FIRSTLEVEL:
+				# Create the enemies for the first level!
+				level_handler.load_level(1)
+				# don't load another first level
+				pygame.time.set_timer(FIRSTLEVEL, 0)
 			elif event.type == KEYDOWN and event.key == K_SPACE:
 				# Fire a projectile
 				# set the center to the players location
-				new_projectile = Projectile(
-					center=(
-						player.rect.x + (player.surf.get_width() / 2),
-						player.rect.y
-					)
-				)
-				# add project to the lists
-				add_to_sprite_groups(new_projectile, projectiles, all_sprites)
-
-
+				new_projectile = Projectile(center=(Model.get_instance().get_player_gun()))
+				Model.get_instance().add_projectile(new_projectile)
 		pressed_keys = pygame.key.get_pressed()
-		# update player
-		player.update(pressed_keys)
-		# update enemies position
-		enemies.update()
-		projectiles.update()
+		# update the Model
+		Model.get_instance().update(pressed_keys)
 		screen.fill((0, 0, 0))
-		# draw sprites on screen
-		for entity in all_sprites:
+		# draw sprites on screen 
+		# i dont like how all sprites is public
+		# TODO: Implement a view class?
+		for entity in Model.get_instance().all_sprites:
 			screen.blit(entity.surf, entity.rect)
-
-		# check if any enemies have collided w the player
-		if pygame.sprite.spritecollideany(player, enemies):
-			player.kill()
+		if Model.get_instance().check_player_enemy_collision():
 			running = False
 		# check if any enemies have collided w our player's projectiles
-		pygame.sprite.groupcollide(projectiles, enemies, True, True)
-
-
+		Model.get_instance().check_projectile_enemy_collision()
 		# update the display
 		pygame.display.flip()
 
