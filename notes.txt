@@ -1,10 +1,13 @@
-# space game
-# first level is spaceship running from police at intergalactic mall
-# spaceship flies towards the right
-# ship can fly up, down, left, right
-# enemies come from the right
-# eventually a boss
-# obstacles on the way?
+enemy type #1
+stupid drone thing
+    behavior 1:
+    floats down the screen a bit and darts off to the side
 
-TODO
-put player and enemy in separate classes
+    behavior 2:
+    floats down the screen and then tracks player
+
+    behavior 3:
+    tracks player from beginning
+    
+    behavior 4:
+    floats down screen
