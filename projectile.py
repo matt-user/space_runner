@@ -9,17 +9,21 @@ class Projectile(pygame.sprite.Sprite):
 	# class constants
 	ANIMATION_DELAY = 20
 
-	def __init__(self, center):
+	def __init__(self, center, direction=(0, -1)):
 		super().__init__()
 		# load all of the projectile animations
 		self.animation = Animation(Projectile.ANIMATION_DELAY, 'assets', 'projectile')
 		self.surf = self.animation.get_image()
 		self.rect = self.surf.get_rect(center=center)
+		self.speed = 6
+		self.x_dir, self.y_dir = direction
+		self.x_dir *= self.speed
+		self.y_dir *= self.speed
 	
 	def update(self):
 		"""update the projectile's location"""
 		self.surf = self.animation.next_animation()
-		self.rect.move_ip(0, -3)
+		self.rect.move_ip(self.x_dir, self.y_dir)
 		self.check_projectile_bounds()
 	
 	def check_projectile_bounds(self):
