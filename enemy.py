@@ -22,6 +22,8 @@ class Enemy(pygame.sprite.Sprite):
 	# remove the sprite when it passes the bottom edge of the screen
 	def update(self):
 		"""Update the behavior of enemy."""
+		if self.moving:
+			self.update_location()
 		if self.rect.top > config.SCREEN_HEIGHT:
 			self.kill()
 	
@@ -41,7 +43,7 @@ class Enemy(pygame.sprite.Sprite):
 
 	def update_location(self):
 		"""Update the location of the enemy."""
-		if (self.rect.x, self.rect.y) == self.destination:
+		if (self.get_enemy_gun()) == self.destination:
 			self.stop_moving()
 			return True
 		x_dir, y_dir = self.get_direction_from_self(self.destination)
@@ -55,6 +57,13 @@ class Enemy(pygame.sprite.Sprite):
 		x_dif_normed = x_dif / magnitude
 		y_dif_normed = y_dif / magnitude
 		return x_dif_normed, y_dif_normed
+
+	def get_enemy_gun(self):
+		"""Returns the position of the enemy's gun"""
+		return (
+			self.rect.x + (self.surf.get_width() / 2),
+			self.rect.y + self.surf.get_height()
+		)
 		
 
 class Mall_Fighter(Enemy):
@@ -72,16 +81,14 @@ class Mall_Fighter(Enemy):
 		self.surf = pygame.Surface((50, 50))
 		self.surf.fill((255, 255, 255))
 		self.rect = self.surf.get_rect(center=center)
-		self.speed = Mall_Fighter.MALL_FIGHTER_SPEED
 	
 	def update(self):
 		"""Update the behavior of the Mall Fighter."""
+		Enemy.update(self)
 		self.counter += 1
 		if self.counter == 15:
 			self.counter = 0
 			self.fire_at_player()
-		self.rect.move_ip(0, self.speed)
-		Enemy.update(self)
 
 	def fire_at_player(self):
 		"""Fire a projectile at the player."""
@@ -90,13 +97,6 @@ class Mall_Fighter(Enemy):
 			direction=Enemy.get_direction_from_self(self, Model.get_instance().get_player_gun())
 		)
 		Model.get_instance().add_enemy_projectile(new_projectile)
-	
-	def get_enemy_gun(self):
-		"""Returns the position of the enemie's gun"""
-		return (
-			self.rect.x + (self.surf.get_width() / 2),
-			self.rect.y + self.surf.get_height()
-		)
 
 
 # Float enemy that inherits from enemy
