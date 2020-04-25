@@ -22,7 +22,9 @@ class Model():
         # Create group to hold enemies for collision detection and position updates
         self.enemies = pygame.sprite.Group()
         # Create group to hold bullets for collision detection and position updates
-        self.projectiles = pygame.sprite.Group()
+        self.player_projectiles = pygame.sprite.Group()
+        # Create group to hold bullets for the enemies
+        self.enemy_projectiles = pygame.sprite.Group()
         # Create group to hold all sprites for rendering
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
@@ -32,12 +34,13 @@ class Model():
         """Update all of the groups in model."""
         self.player.update(pressed_keys)
         self.enemies.update()
-        self.projectiles.update()
+        self.player_projectiles.update()
+        self.enemy_projectiles.update()
 
     def check_projectile_enemy_collision(self):
         """Checks if a projectile has collided with an enemy
            and removes the enemy if so."""
-        pygame.sprite.groupcollide(self.projectiles, self.enemies, True, True)
+        pygame.sprite.groupcollide(self.player_projectiles, self.enemies, True, True)
 
     def check_player_enemy_collision(self):
         """Returns true if the player has collided into an enemy and removes player from game."""
@@ -57,9 +60,13 @@ class Model():
         """Adds the enemy to the appropriate groups."""
         self.__add_to_sprite_groups(enemy, self.enemies, self.all_sprites)
 
-    def add_projectile(self, projectile):
+    def add_player_projectile(self, projectile):
         """Adds the projectile to the appropriate groups."""
-        self.__add_to_sprite_groups(projectile, self.projectiles, self.all_sprites)
+        self.__add_to_sprite_groups(projectile, self.player_projectiles, self.all_sprites)
+    
+    def add_enemy_projectile(self, projectile):
+        """Add the projectile to the enemy projectile groups."""
+        self.__add_to_sprite_groups(projectile, self.enemy_projectiles, self.all_sprites)
 
     def __add_to_sprite_groups(self, sprite, *groups):
         """Add the sprite to all of the groups provided."""
