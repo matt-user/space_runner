@@ -15,8 +15,8 @@ from pygame.locals import (
 class Player(pygame.sprite.Sprite):
 	# class constants
 	ANIMATION_DELAY = 10
-	X_SPEED = 4
-	Y_SPEED = 4
+	X_SPEED = 3
+	Y_SPEED = 3
 
 	def __init__(self):
 		super().__init__()
