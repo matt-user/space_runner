@@ -11,3 +11,11 @@ stupid drone thing
     
     behavior 4:
     floats down screen
+
+Problem:
+Too hard to hit floater enemies
+Solution:
+Increase bullet or enemy size
+
+Problem:
+I think all sprites are too small.  Screen feels empty
