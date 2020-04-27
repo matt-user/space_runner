@@ -14,8 +14,11 @@ from model import Model
 
 # Enemy class that tries to destroy user
 class Enemy(pygame.sprite.Sprite):
-	def __init__(self, speed):
+	def __init__(self, center, speed, animation_delay, *filepath):
 		super().__init__()
+		self.animation = Animation(animation_delay, *filepath)
+		self.surf = self.animation.get_image()
+		self.rect = self.surf.get_rect(center=center)
 		self.speed = speed
 		self.moving = False
 		self.delta = (0, 0)
@@ -23,6 +26,7 @@ class Enemy(pygame.sprite.Sprite):
 	# remove the sprite when it passes the bottom edge of the screen
 	def update(self):
 		"""Update the behavior of enemy."""
+		self.surf = self.animation.next_animation()
 		if self.moving:
 			self.update_location()
 		if self.rect.top > config.SCREEN_HEIGHT:
@@ -82,64 +86,3 @@ class Enemy(pygame.sprite.Sprite):
 	def is_moving(self):
 		"""Return whether the enemy is moving."""
 		return self.moving
-		
-
-class Mall_Fighter(Enemy):
-	"""Mall Fighter class that inherits from the Enemy base."""
-
-	# class constants
-	MALL_FIGHTER_SPEED = 3
-
-	def __init__(self, center, waypoints, firepoints):
-		"""Constructs the mall fighter at center=center"""
-		super().__init__(Mall_Fighter.MALL_FIGHTER_SPEED)
-		self.fire_idx = 0
-		self.way_idx = 0
-		self.waypoints = waypoints
-		self.firepoints = firepoints
-		self.surf = pygame.Surface((50, 50))
-		self.surf.fill((255, 255, 255))
-		self.rect = self.surf.get_rect(center=center)
-	
-	def update(self):
-		"""Update the behavior of the Mall Fighter."""
-		Enemy.update(self)
-		if self.way_idx < len(self.waypoints) and not Enemy.is_moving(self):
-			Enemy.start_moving(self, self.waypoints[self.way_idx])
-			self.way_idx += 1
-		if self.fire_idx < len(self.firepoints) and Enemy.is_enemy_at_location(self, self.firepoints[self.fire_idx]):
-			self.fire_at_player()
-			self.fire_idx += 1
-
-	def fire_at_player(self):
-		"""Fire a projectile at the player."""
-		new_projectile = Projectile(
-			center=self.get_enemy_gun(),
-			direction=Enemy.get_direction_from_self(self, Model.get_instance().get_player_gun())
-		)
-		Model.get_instance().add_enemy_projectile(new_projectile)
-
-
-# Float enemy that inherits from enemy
-# this enemy simply floats down the screen
-class Floater(Enemy):
-	# Minimum and maximum possible speeds for this enemy
-	MIN_SPEED_POSSIBLE = 2
-	MAX_SPEED_POSSIBLE = 3
-	ANIMATION_DELAY = 10
-	FLOATER_SPEED = 2
-
-	def __init__(self, center):
-		super().__init__(Floater.FLOATER_SPEED)
-		# load all of the floater's animations
-		self.animation = Animation(Floater.ANIMATION_DELAY, 'assets', 'enemy')
-		self.surf = self.animation.get_image()
-		self.rect = self.surf.get_rect(center=center)
-		self.speed = Floater.FLOATER_SPEED
-	
-	def update(self):
-		"""Update the behavior of a Floater enemy."""
-		self.surf = self.animation.next_animation()
-		self.rect.move_ip(0, self.speed)
-		Enemy.update(self)
-	
