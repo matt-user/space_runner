@@ -8,7 +8,6 @@ import config
 from controller import Controller
 
 if __name__ == '__main__':
-	# main()
 	os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (config.X_WIN_POS, config.Y_WIN_POS)
 	pygame.init()
 	pygame.display.set_caption("Space Runner")
