@@ -66,7 +66,7 @@ class Enemy(pygame.sprite.Sprite):
 	def get_direction(self, point_a, point_b):
 		"""Returns the normalized direction from point a to the point b."""
 		x_dif, y_dif = map(operator.sub, point_b, point_a)
-		magnitude = math.sqrt(x_dif ** 2 + y_dif ** 2)
+		magnitude = math.sqrt((x_dif ** 2) + (y_dif ** 2))
 		x_dif_normed = x_dif / magnitude
 		y_dif_normed = y_dif / magnitude
 		return x_dif_normed, y_dif_normed
