@@ -55,6 +55,13 @@ class Model():
             self.player.rect.x + (self.player.surf.get_width() / 2),
 			self.player.rect.y
         )
+    
+    def get_player_center(self):
+        """Returns the center of the player's position"""
+        return (
+            self.player.rect.x + (self.player.surf.get_width() / 2),
+            self.player.rect.y + (self.player.surf.get_height() / 2)
+        )
 
     def add_enemy(self, enemy):
         """Adds the enemy to the appropriate groups."""
