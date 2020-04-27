@@ -44,7 +44,7 @@ class Enemy(pygame.sprite.Sprite):
 	
 	def compute_delta(self):
 		"""Compute the change in the x and y direction for each update"""
-		x_dir, y_dir = self.get_direction_from_self(self.destination)
+		x_dir, y_dir = self.get_direction(self.get_enemy_pos(), self.destination)
 		self.delta = (x_dir * self.speed, y_dir * self.speed)
 
 	def stop_moving(self):
@@ -59,20 +59,20 @@ class Enemy(pygame.sprite.Sprite):
 		if self.is_enemy_at_location(self.destination):
 			self.stop_moving()
 			return True
-		x_dir, y_dir = self.get_direction_from_self(self.destination)
+		x_dir, y_dir = self.get_direction(self.get_enemy_pos(), self.destination)
 		self.rect.move_ip(self.speed * x_dir, self.speed * y_dir)
 		return False
 	
-	def get_direction_from_self(self, point):
-		"""Returns the normalized direction from the enemy to the point."""
-		x_dif, y_dif = map(operator.sub, point, self.get_enemy_gun())
+	def get_direction(self, point_a, point_b):
+		"""Returns the normalized direction from point a to the point b."""
+		x_dif, y_dif = map(operator.sub, point_b, point_a)
 		magnitude = math.sqrt(x_dif ** 2 + y_dif ** 2)
 		x_dif_normed = x_dif / magnitude
 		y_dif_normed = y_dif / magnitude
 		return x_dif_normed, y_dif_normed
 
-	def get_enemy_gun(self):
-		"""Returns the position of the enemy's gun"""
+	def get_enemy_pos(self):
+		"""Returns the middle front of an enemy"""
 		return (
 			self.rect.x + (self.surf.get_width() / 2),
 			self.rect.y + self.surf.get_height()
@@ -80,7 +80,7 @@ class Enemy(pygame.sprite.Sprite):
 
 	def is_enemy_at_location(self, point):
 		"""Returns whether the enemy is at the given point."""
-		x_dif, y_dif = map(operator.sub, point, self.get_enemy_gun())
+		x_dif, y_dif = map(operator.sub, point, self.get_enemy_pos())
 		return (abs(x_dif) <= self.delta[0]) and (abs(y_dif) <= self.delta[1])
 
 	def is_moving(self):
