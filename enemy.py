@@ -18,6 +18,7 @@ class Enemy(pygame.sprite.Sprite):
 		super().__init__()
 		self.speed = speed
 		self.moving = False
+		self.delta = (0, 0)
 
 	# remove the sprite when it passes the bottom edge of the screen
 	def update(self):
@@ -35,6 +36,12 @@ class Enemy(pygame.sprite.Sprite):
 			return
 		self.moving = True
 		self.destination = point
+		self.compute_delta()
+	
+	def compute_delta(self):
+		"""Compute the change in the x and y direction for each update"""
+		x_dir, y_dir = self.get_direction_from_self(self.destination)
+		self.delta = (x_dir * self.speed, y_dir * self.speed)
 
 	def stop_moving(self):
 		"""Tells this object to stop moving"""
@@ -43,7 +50,9 @@ class Enemy(pygame.sprite.Sprite):
 
 	def update_location(self):
 		"""Update the location of the enemy."""
-		if (self.get_enemy_gun()) == self.destination:
+		# if the difference between the destination and the enemy 
+		# is small enough consider us at the destination
+		if self.is_enemy_at_location(self.destination):
 			self.stop_moving()
 			return True
 		x_dir, y_dir = self.get_direction_from_self(self.destination)
@@ -64,6 +73,15 @@ class Enemy(pygame.sprite.Sprite):
 			self.rect.x + (self.surf.get_width() / 2),
 			self.rect.y + self.surf.get_height()
 		)
+
+	def is_enemy_at_location(self, point):
+		"""Returns whether the enemy is at the given point."""
+		x_dif, y_dif = map(operator.sub, point, self.get_enemy_gun())
+		return (abs(x_dif) <= self.delta[0]) and (abs(y_dif) <= self.delta[1])
+
+	def is_moving(self):
+		"""Return whether the enemy is moving."""
+		return self.moving
 		
 
 class Mall_Fighter(Enemy):
@@ -72,12 +90,13 @@ class Mall_Fighter(Enemy):
 	# class constants
 	MALL_FIGHTER_SPEED = 3
 
-	def __init__(self, center):
+	def __init__(self, center, waypoints, firepoints):
 		"""Constructs the mall fighter at center=center"""
 		super().__init__(Mall_Fighter.MALL_FIGHTER_SPEED)
-		# self.stop_pos = stop_pos
-		# self.move_dir = move_dir
-		self.counter = 0
+		self.fire_idx = 0
+		self.way_idx = 0
+		self.waypoints = waypoints
+		self.firepoints = firepoints
 		self.surf = pygame.Surface((50, 50))
 		self.surf.fill((255, 255, 255))
 		self.rect = self.surf.get_rect(center=center)
@@ -85,10 +104,12 @@ class Mall_Fighter(Enemy):
 	def update(self):
 		"""Update the behavior of the Mall Fighter."""
 		Enemy.update(self)
-		self.counter += 1
-		if self.counter == 15:
-			self.counter = 0
+		if self.way_idx < len(self.waypoints) and not Enemy.is_moving(self):
+			Enemy.start_moving(self, self.waypoints[self.way_idx])
+			self.way_idx += 1
+		if self.fire_idx < len(self.firepoints) and Enemy.is_enemy_at_location(self, self.firepoints[self.fire_idx]):
 			self.fire_at_player()
+			self.fire_idx += 1
 
 	def fire_at_player(self):
 		"""Fire a projectile at the player."""
