@@ -2,11 +2,10 @@ import pygame
 
 import config
 
-from level_handler import Level_Handler
 from model import Model
 from projectile import Projectile
-from enemy import Mall_Fighter
-from enemy import Floater
+from mall_fighter import Mall_Fighter
+from floater import Floater
 
 from pygame.locals import (
     KEYDOWN,
