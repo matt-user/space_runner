@@ -25,7 +25,7 @@ class Controller():
         self.running = True
         # First level event
         self.FIRSTLEVEL = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.FIRSTLEVEL, 3000)
+        pygame.time.set_timer(self.FIRSTLEVEL, 1000)
 
     def load_level(self, level):
         """Loads the game objects based on the given level."""
@@ -36,7 +36,7 @@ class Controller():
         self.level_one_enemy_locations = [
             (config.SCREEN_WIDTH / 2, 0)
         ]
-        waypoints = [(300, 300), (600, 600)]
+        waypoints = [(300, 300), (800, 600)]
         firepoints = [(300, 150), (300, 300)]
         if level == 1:
             for location in self.level_one_enemy_locations:
@@ -89,6 +89,9 @@ class Controller():
     def check_collisions(self):
         """Check the game objects for collisions"""
         if Model.get_instance().check_player_enemy_collision():
+            self.running = False
+        # check if the player has collided w the enemies' projectiles
+        if Model.get_instance().check_projectile_player_collision():
             self.running = False
         # check if any enemies have collided w our player's projectiles
         Model.get_instance().check_projectile_enemy_collision()
