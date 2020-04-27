@@ -1,6 +1,8 @@
 import os
 import pygame
 
+import config
+
 from utility import get_image
 from animation import Animation
 
@@ -28,6 +30,7 @@ class Projectile(pygame.sprite.Sprite):
 	
 	def check_projectile_bounds(self):
 		"""Check the projectile bounds."""
-		# remove the sprite when it passes the top edge of the screen
-		if self.rect.bottom < 0:
+		# remove the sprite when it passes the edges of the screen
+		if (self.rect.bottom < 0 or self.rect.top > config.SCREEN_HEIGHT
+			or self.rect.right < 0 or self.rect.left > config.SCREEN_WIDTH):
 			self.kill()
