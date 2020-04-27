@@ -35,10 +35,12 @@ class Mall_Fighter(Enemy):
 
     def fire_at_player(self):
         """Fire a projectile at the player."""
+        play_center = Model.get_instance().get_player_center()
         for gun_pos in self.get_enemy_gun():
+            direct = Enemy.get_direction(self, gun_pos, play_center)
             new_projectile = Projectile(
                 center=gun_pos,
-                direction=Enemy.get_direction(self, gun_pos, Model.get_instance().get_player_center())
+                direction=direct
             )
             Model.get_instance().add_enemy_projectile(new_projectile)
 
