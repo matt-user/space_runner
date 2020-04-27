@@ -42,6 +42,14 @@ class Model():
            and removes the enemy if so."""
         pygame.sprite.groupcollide(self.player_projectiles, self.enemies, True, True)
 
+    def check_projectile_player_collision(self):
+        """Checks if a enemy projectile has collided with the player
+        and removes the player is so"""
+        player_collided = pygame.sprite.spritecollideany(self.player, self.enemy_projectiles)
+        if player_collided:
+            self.player.kill()
+        return player_collided
+
     def check_player_enemy_collision(self):
         """Returns true if the player has collided into an enemy and removes player from game."""
         player_collided = pygame.sprite.spritecollideany(self.player, self.enemies)
