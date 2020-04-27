@@ -13,7 +13,6 @@ stupid drone thing
     floats down screen
 
 # TODO
-have mall fighter shoot two bullets
 more accurate targeting
 change bullet animation depending on angle of shot
 have enemy bullets kill player (might not want this for testing purposes)
