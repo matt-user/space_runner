@@ -29,7 +29,12 @@ class Enemy(pygame.sprite.Sprite):
 		self.surf = self.animation.next_animation()
 		if self.moving:
 			self.update_location()
-		if self.rect.top > config.SCREEN_HEIGHT:
+		self.check_enemy_bounds()
+	
+	def check_enemy_bounds(self):
+		"""If the enemy is off of the screen kill it."""
+		if (self.rect.bottom < 0 or self.rect.top > config.SCREEN_HEIGHT
+			or self.rect.left > config.SCREEN_WIDTH or self.rect.right < 0):
 			self.kill()
 	
 	def start_moving(self, point):
