@@ -13,9 +13,8 @@ stupid drone thing
     floats down screen
 
 # TODO
-more accurate targeting
-change bullet animation depending on angle of shot
-have enemy bullets kill player (might not want this for testing purposes)
+limit the amount of bullets player can fire
+build whole first level
 
 Problem:
 Too hard to hit floater enemies
