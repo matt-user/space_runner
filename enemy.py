@@ -33,8 +33,10 @@ class Enemy(pygame.sprite.Sprite):
 	
 	def check_enemy_bounds(self):
 		"""If the enemy is off of the screen kill it."""
-		if (self.rect.bottom < 0 or self.rect.top > config.SCREEN_HEIGHT
-			or self.rect.left > config.SCREEN_WIDTH or self.rect.right < 0):
+		# we don't check if the enemy is off the top bc that is were they spawn
+		# could add a bool to see if enemy was on the screen then off
+		if (self.rect.top > config.SCREEN_HEIGHT or self.rect.left > config.SCREEN_WIDTH
+			or self.rect.right < 0):
 			self.kill()
 	
 	def start_moving(self, point):
