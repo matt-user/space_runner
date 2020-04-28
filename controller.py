@@ -67,10 +67,8 @@ class Controller():
                 # don't load another first level
                 pygame.time.set_timer(self.FIRSTLEVEL, 0)
             elif event.type == KEYDOWN and event.key == K_SPACE:
-                # Fire a projectile
-                # set the center to the players location
-                new_projectile = Projectile(center=(Model.get_instance().get_player_gun()))
-                Model.get_instance().add_player_projectile(new_projectile)
+                player = Model.get_instance().get_player()
+                player.fire()
     
     def update(self):
         """Update the game objects."""
