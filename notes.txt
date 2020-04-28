@@ -13,7 +13,6 @@ stupid drone thing
     floats down screen
 
 # TODO
-limit the amount of bullets player can fire
 build whole first level
 
 Problem:
