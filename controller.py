@@ -4,8 +4,7 @@ import config
 
 from model import Model
 from projectile import Projectile
-from mall_fighter import Mall_Fighter
-from floater import Floater
+from enemy_factory import create_enemy
 
 from pygame.locals import (
     KEYDOWN,
@@ -29,19 +28,20 @@ class Controller():
 
     def load_level(self, level):
         """Loads the game objects based on the given level."""
-        """self.level_one_enemy_locations = [
-            (10, -10), (50, -50), (config.SCREEN_WIDTH / 2, -900),
-            ((config.SCREEN_WIDTH / 2) - 30, -1000), ((config.SCREEN_WIDTH / 2) + 50, -1100)
-        ]"""
-        self.level_one_enemy_locations = [
-            (config.SCREEN_WIDTH / 2, 0)
+        self.level_one_enemy_info = [
+            { "location": (10, -10), "enemy_type": "Floater", "waypoints": [], "firepoints": [] },
+            { "location": (50, -50), "enemy_type": "Floater", "waypoints": [], "firepoints": [] },
+            { "location": (config.SCREEN_WIDTH / 2, -900), "enemy_type": "Floater", "waypoints": [], "firepoints": [] },
+            { "location": ((config.SCREEN_WIDTH / 2) - 30, -1000), "enemy_type": "Floater", "waypoints": [], "firepoints": [] },
+            { "location": ((config.SCREEN_WIDTH / 2) + 50, -1100), "enemy_type": "Floater", "waypoints": [], "firepoints": [] },
+            { "location": (config.SCREEN_WIDTH / 2, -1200), "enemy_type": "Mall_Fighter", "waypoints": [(300, 300), (800, 600)], "firepoints": [(300, 150), (300, 300)] }
         ]
-        waypoints = [(300, 300), (800, 600)]
-        firepoints = [(300, 150), (300, 300)]
         if level == 1:
-            for location in self.level_one_enemy_locations:
-                new_enemy = Mall_Fighter(location, waypoints, firepoints)
-                # new_enemy = Floater(location)
+            for enemy_info in self.level_one_enemy_info:
+                new_enemy = create_enemy(
+                    enemy_info["location"], enemy_info["enemy_type"],
+                    enemy_info["waypoints"], enemy_info["firepoints"]
+                )
                 Model.get_instance().add_enemy(new_enemy)
 
 
@@ -74,6 +74,7 @@ class Controller():
         """Update the game objects."""
         self.pressed_keys = pygame.key.get_pressed()
         Model.get_instance().update(self.pressed_keys)
+
     
     def draw(self):
         """Draw the game objects."""
