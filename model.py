@@ -3,8 +3,6 @@ The model is responsible for keeping track of all of the game's entities."""
 
 import pygame
 
-from player import Player
-
 class Model():
     __instance = None
     @staticmethod
@@ -16,6 +14,8 @@ class Model():
 
     def __init__(self):
         """Initialize the model with the groups necessary."""
+        # to avoid circular import
+        from player import Player
         if Model.__instance != None:
             raise Exception("Error: This class is a singleton.  Can not directly construct")
         Model.__instance = self
@@ -57,12 +57,13 @@ class Model():
             self.player.kill()
         return player_collided
 
+    def get_player(self):
+        """Returns the player object"""
+        return self.player
+
     def get_player_gun(self):
         """Returns the players gun position."""
-        return (
-            self.player.rect.x + (self.player.surf.get_width() / 2),
-			self.player.rect.y
-        )
+        return self.player.get_gun()
     
     def get_player_center(self):
         """Returns the center of the player's position"""
