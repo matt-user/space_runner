@@ -15,6 +15,16 @@ class Animation():
         self.image_timer = 0
         self.animation_delay = animation_delay
     
+    def rotate_center(self, angle):
+        """Rotate the images while keeping its center and size"""
+        rotated_images = []
+        for image in self.images:
+            orig_center = image.get_rect().center
+            rotated_image = pygame.transform.rotate(image, angle)
+            rotated_image.get_rect().center = orig_center
+            rotated_image.get_rect().center = rotated_image.get_rect().center
+            rotated_images.append(rotated_image)
+        self.images = rotated_images
 
     def get_image(self):
         """Returns the current animation image."""
