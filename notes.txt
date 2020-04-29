@@ -1,18 +1,11 @@
-enemy type #1
-stupid drone thing
-    behavior 1:
-    floats down the screen a bit and darts off to the side
-
-    behavior 2:
-    floats down the screen and then tracks player
-
-    behavior 3:
-    tracks player from beginning
-    
-    behavior 4:
-    floats down screen
-
 # TODO
+get player to follow mouse
+get the player to rotate with the mouse
+get the player to fire projectiles in the direction its facing
+get the physics of the movement right
+set the mouse image
+
+fix hitboxes
 build whole first level
 
 Problem:
