@@ -15,7 +15,7 @@ class Moving_Object():
 
     def start_moving(self, point):
         """Tells the moving object to start moving to the point."""
-        if (self.rect.x, self.rect.y) == point:
+        if self.get_pos() == point:
             if self.is_moving:
                 self.stop_moving()
             return
@@ -33,6 +33,7 @@ class Moving_Object():
         # if the difference between the destination and the moving object 
         # is small enough, consider us at the destination.
         if self.is_at_location(self.destination):
+            self.set_pos(self.destination)
             self.stop_moving()
             return True
         x_dir, y_dir = get_direction(self.get_pos(), self.destination)
@@ -42,12 +43,16 @@ class Moving_Object():
     def is_at_location(self, point):
         """Returns whether the enemy is at the given point."""
         x_dif, y_dif = map(operator.sub, point, self.get_pos())
-        return (abs(x_dif) <= self.delta[0]) and (abs(y_dif) <= self.delta[1])
+        return (abs(x_dif) <= abs(self.delta[0])) and (abs(y_dif) <= abs(self.delta[1]))
 
     def get_pos(self):
         """Returns the middle front of an enemy"""
-        x, y = self.rect.midbottom
+        x, y = self.rect.midtop
         return x, y
+    
+    def set_pos(self, point):
+        """Sets the position of the moving object"""
+        self.rect.midtop = point
 
     def stop_moving(self):
         """Tells this object to stop moving"""
