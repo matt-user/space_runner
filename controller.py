@@ -9,6 +9,7 @@ from enemy_factory import create_enemy
 from pygame.locals import (
     KEYDOWN,
     K_SPACE,
+    K_ESCAPE,
     QUIT
 )
 
@@ -59,11 +60,11 @@ class Controller():
     def check_events(self):
         """Check the game events."""
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 self.running = False
             elif event.type == self.FIRSTLEVEL:
                 # Create the enemies for the first level!
-                self.load_level(1)
+                # self.load_level(1)
                 # don't load another first level
                 pygame.time.set_timer(self.FIRSTLEVEL, 0)
             elif event.type == KEYDOWN and event.key == K_SPACE:
