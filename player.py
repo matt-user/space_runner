@@ -8,6 +8,7 @@ from animation import Animation
 from model import Model
 from projectile import Projectile
 from utility import get_direction
+from moving_object import Moving_Object
 
 from pygame.locals import (
     K_w,
@@ -36,20 +37,22 @@ class Player(pygame.sprite.Sprite):
         )
         self.fire_counter = 0
         self.can_fire = True
+        self.moving_object = Moving_Object(Player.X_SPEED, self.rect)
 
 
     def update(self, pressed_keys):
         """Updates all of the player's information"""
-        self.update_firing()
         self.surf = self.animation.next_animation()
+        self.update_firing()
         self.update_mouse_movement()
+        if self.moving_object.is_moving:
+            self.moving_object.update_location()
         #self.update_key_movement(pressed_keys)
 
     def update_mouse_movement(self):
         """Updates the player's position based on the mouse position"""
         mouse_pos = pygame.mouse.get_pos()
-        x_dir, y_dir = get_direction(self.rect.midtop, mouse_pos)
-        self.rect.move_ip(Player.X_SPEED * x_dir, Player.Y_SPEED * y_dir)
+        self.moving_object.start_moving(mouse_pos)
 
     
     def update_firing(self):
