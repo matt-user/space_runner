@@ -1,4 +1,5 @@
 import os
+import operator
 import pygame
 
 import config
@@ -6,6 +7,7 @@ from utility import get_image
 from animation import Animation
 from model import Model
 from projectile import Projectile
+from utility import get_direction
 
 from pygame.locals import (
     K_w,
@@ -40,7 +42,15 @@ class Player(pygame.sprite.Sprite):
         """Updates all of the player's information"""
         self.update_firing()
         self.surf = self.animation.next_animation()
-        self.update_movement(pressed_keys)
+        self.update_mouse_movement()
+        #self.update_key_movement(pressed_keys)
+
+    def update_mouse_movement(self):
+        """Updates the player's position based on the mouse position"""
+        mouse_pos = pygame.mouse.get_pos()
+        x_dir, y_dir = get_direction(self.rect.midtop, mouse_pos)
+        self.rect.move_ip(Player.X_SPEED * x_dir, Player.Y_SPEED * y_dir)
+
     
     def update_firing(self):
         """Updates the player's firing status"""
@@ -63,10 +73,10 @@ class Player(pygame.sprite.Sprite):
         """Returns the players gun position."""
         return (
             self.rect.x + (self.surf.get_width() / 2),
-			self.rect.y
+            self.rect.y
         )
 
-    def update_movement(self, pressed_keys):
+    def update_key_movement(self, pressed_keys):
         """Update player movement based on pressed keys"""
         # update the players movement based on the pressed keys
         if pressed_keys[K_w]:
