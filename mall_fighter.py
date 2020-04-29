@@ -4,6 +4,7 @@ from enemy import Enemy
 from animation import Animation
 from projectile import Projectile
 from model import Model
+from utility import get_direction
 
 class Mall_Fighter(Enemy):
 
@@ -25,19 +26,28 @@ class Mall_Fighter(Enemy):
     def update(self):
         """Update the behavior of the Mall Fighter."""
         Enemy.update(self)
-        if self.way_idx < len(self.waypoints) and not Enemy.is_moving(self):
-            Enemy.start_moving(self, self.waypoints[self.way_idx])
+        self.update_movement()
+        self.update_firing()
+        self.surf = self.animation.next_animation()
+
+    def update_movement(self):
+        """Updates the mall fighters movement"""
+        if self.way_idx < len(self.waypoints) and not self.moving_object.is_moving:
+            self.moving_object.start_moving(self.waypoints[self.way_idx])
             self.way_idx += 1
-        if self.fire_idx < len(self.firepoints) and Enemy.is_enemy_at_location(self, self.firepoints[self.fire_idx]):
+
+    def update_firing(self):
+        """Updates the mall fighters firing"""
+        if (self.fire_idx < len(self.firepoints) and
+            self.moving_object.is_at_location(self.firepoints[self.fire_idx])):
             self.fire_at_player()
             self.fire_idx += 1
-        self.surf = self.animation.next_animation()
 
     def fire_at_player(self):
         """Fire a projectile at the player."""
         play_center = Model.get_instance().get_player_center()
         for gun_pos in self.get_enemy_gun():
-            direct = Enemy.get_direction(self, gun_pos, play_center)
+            direct = get_direction(gun_pos, play_center)
             new_projectile = Projectile(
                 center=gun_pos,
                 direction=direct
