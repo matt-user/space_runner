@@ -3,7 +3,6 @@ import pygame
 import config
 
 from model import Model
-from projectile import Projectile
 from enemy_factory import create_enemy
 
 from pygame.locals import (
