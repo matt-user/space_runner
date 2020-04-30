@@ -3,11 +3,12 @@ import operator
 import pygame
 
 import config
-from utility import get_image, get_direction, get_rotation_angle
+
+from utility import get_direction, get_rotation_angle
 from animation import Animation
 from model import Model
 from projectile import Projectile
-from moving_object import Moving_Object
+from moving_object import MovingObjectMixin
 
 from pygame.locals import (
     K_w,
@@ -17,7 +18,7 @@ from pygame.locals import (
 )
 
 # Player class that user controls
-class Player(pygame.sprite.Sprite):
+class Player(MovingObjectMixin, pygame.sprite.Sprite):
     # class constants
     ANIMATION_DELAY = 10
     FIRE_DELAY = 20
@@ -25,27 +26,28 @@ class Player(pygame.sprite.Sprite):
     Y_SPEED = 3
 
     def __init__(self):
-        super().__init__()
+        pygame.sprite.Sprite.__init__(self)
+        MovingObjectMixin.__init__(self, Player.X_SPEED)
+        #super().__init__(Player.X_SPEED)
         # load all of the players animations
         self.animation = Animation(Player.ANIMATION_DELAY, 'assets', 'player')
         self.surf = self.animation.get_image()
-        """self.rect = self.surf.get_rect(
+        self.rect = self.surf.get_rect(
             center=(
                 config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT
             )
-        )"""
-        self.rect = self.surf.get_rect(center=(300, 300))
+        )
+        #self.rect = self.surf.get_rect(center=(300, 300))
         self.fire_counter = 0
         self.can_fire = True
-        self.moving_object = Moving_Object(Player.X_SPEED, self.rect)
 
 
     def update(self, pressed_keys):
         """Updates all of the player's information"""
         self.update_firing()
         self.update_mouse_movement()
-        if self.moving_object.is_moving:
-            self.moving_object.update_location()
+        if self.is_moving:
+            self.update_location()
         # self.surf = self.animation.next_animation()
 
 
@@ -58,7 +60,7 @@ class Player(pygame.sprite.Sprite):
         original_center = self.rect.center
         self.surf = pygame.transform.rotate(original_image, rotation_angle)
         self.rect = self.surf.get_rect(center=original_center)
-        self.moving_object.start_moving(mouse_pos)
+        self.start_moving(mouse_pos)
         # self.animation.rotate_center(rotation_angle)
         self.check_player_bounds()
 
@@ -77,7 +79,10 @@ class Player(pygame.sprite.Sprite):
         # set the center to the players location
         if self.can_fire:
             self.can_fire = False
-            new_projectile = Projectile(center=self.get_gun())
+            direction = get_direction(self.rect.midtop, pygame.mouse.get_pos())
+            if direction == (0, 0):
+                direction = (0, -1)
+            new_projectile = Projectile(center=self.rect.midtop, direction=direction)
             Model.get_instance().add_player_projectile(new_projectile)
     
     def get_gun(self):
