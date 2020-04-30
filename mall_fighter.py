@@ -1,12 +1,11 @@
 """Mall fighter class that inherits from enemy."""
 
 from enemy import Enemy
-from animation import Animation
 from projectile import Projectile
 from model import Model
 from utility import get_direction
 
-class Mall_Fighter(Enemy):
+class MallFighter(Enemy):
 
     # class constant
     MALL_FIGHTER_SPEED = 3
@@ -17,7 +16,7 @@ class Mall_Fighter(Enemy):
 
     def __init__(self, center, waypoints, firepoints):
         """Constructs the mall fighter at center=center"""
-        super().__init__(center, Mall_Fighter.MALL_FIGHTER_SPEED, Mall_Fighter.ANIMATION_DELAY, *Mall_Fighter.FILE_PATH)
+        super().__init__(center, MallFighter.MALL_FIGHTER_SPEED, MallFighter.ANIMATION_DELAY, *MallFighter.FILE_PATH)
         self.fire_idx = 0
         self.way_idx = 0
         self.waypoints = waypoints
@@ -56,5 +55,5 @@ class Mall_Fighter(Enemy):
 
     def get_enemy_gun(self):
         """Returns the point(s) of the enemy's gun(s)"""
-        return [(self.rect.x + x_pos, self.rect.y + y_pos) for x_pos, y_pos in Mall_Fighter.GUN_POS_OFFSETS]
+        return [(self.rect.x + x_pos, self.rect.y + y_pos) for x_pos, y_pos in MallFighter.GUN_POS_OFFSETS]
     
