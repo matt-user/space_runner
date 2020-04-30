@@ -1,5 +1,4 @@
 # TODO
-get player to follow mouse
 get the player to rotate with the mouse
 get the player to fire projectiles in the direction its facing
 get the physics of the movement right
