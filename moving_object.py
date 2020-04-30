@@ -4,14 +4,13 @@ import operator
 
 from utility import get_direction
 
-class Moving_Object():
+class MovingObjectMixin:
 
-    def __init__(self, speed, rect):
+    def __init__(self, speed):
         """Moving object constructor"""
         self.speed = speed
         self.is_moving = False
         self.delta = (0, 0)
-        self.rect = rect
 
     def start_moving(self, point):
         """Tells the moving object to start moving to the point."""
