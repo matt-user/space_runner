@@ -29,5 +29,8 @@ def get_direction(point_a, point_b):
 
 def get_rotation_angle(x_dir, y_dir):
 	"""Returns the rotation angle of the two directions."""
+	# to avoid an infinite angle return 0
+	if x_dir == 0:
+		return 0
 	rotation_angle = -math.atan2(y_dir, x_dir) * (180.0 / math.pi) - 90.0
 	return rotation_angle
