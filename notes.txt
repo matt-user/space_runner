@@ -1,6 +1,5 @@
 # TODO
-get the player to rotate with the mouse
-get the player to fire projectiles in the direction its facing
+make rotation and firing look better lol
 get the physics of the movement right
 set the mouse image
 
