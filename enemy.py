@@ -7,21 +7,17 @@ import operator
 
 import config
 from animation import Animation
-from projectile import Projectile
-from model import Model
-from utility import get_direction
-from moving_object import Moving_Object
+from moving_object import MovingObjectMixin
 
-# TODO: make factory for enemies
 
 # Enemy class that tries to destroy user
-class Enemy(pygame.sprite.Sprite):
+class Enemy(MovingObjectMixin, pygame.sprite.Sprite):
 	def __init__(self, center, speed, animation_delay, *filepath):
-		super().__init__()
+		pygame.sprite.Sprite.__init__(self)
+		MovingObjectMixin.__init__(self, speed)
 		self.animation = Animation(animation_delay, *filepath)
 		self.surf = self.animation.get_image()
 		self.rect = self.surf.get_rect(center=center)
-		self.moving_object = Moving_Object(speed, self.rect)
 
 	# remove the sprite when it passes the bottom edge of the screen
 	def update(self):
