@@ -1,6 +1,7 @@
 import os
 import operator
 import pygame
+from pygame.math import Vector2
 
 import config
 
@@ -28,16 +29,25 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         MovingObjectMixin.__init__(self, Player.X_SPEED)
-        #super().__init__(Player.X_SPEED)
         # load all of the players animations
         self.animation = Animation(Player.ANIMATION_DELAY, 'assets', 'player')
         self.surf = self.animation.get_image()
-        self.rect = self.surf.get_rect(
+        # store the original image to minimze image loss when rotating
+        self.original_surf = self.surf
+        """self.rect = self.surf.get_rect(
             center=(
                 config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT
             )
-        )
-        #self.rect = self.surf.get_rect(center=(300, 300))
+        )"""
+        self.rect = self.surf.get_rect(center=(300, 300))
+        # variables for rotating player
+        self.gun_pos = Vector2(*self.rect.midtop)
+        self.direction = Vector2(0, 1)
+        self.original_direction = self.direction
+        # self.direction = Vector2(0, 1)
+        # self.angle_speed = 0
+        # self.angle = 0
+        # variables to handle firing functionality
         self.fire_counter = 0
         self.can_fire = True
 
@@ -50,19 +60,32 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
             self.update_location()
         # self.surf = self.animation.next_animation()
 
+    def get_pos(self):
+        """Defines what the player's position means for moving object."""
+        return self.gun_pos # this is what I want to return
+        # return self.rect.midtop
+
 
     def update_mouse_movement(self):
         """Update the player's position and rotation based on the mouse position."""
-        mouse_pos = pygame.mouse.get_pos()
-        x_dir, y_dir = get_direction(self.rect.midtop, mouse_pos)
-        rotation_angle = get_rotation_angle(x_dir, y_dir)
+        mouse_pos = Vector2(*pygame.mouse.get_pos())
+        rel_mouse_pos = mouse_pos - self.get_pos()
+        self.rotate_player(rel_mouse_pos)
+        self.start_moving(mouse_pos)
+        # self.animation.rotate_center(rotation_angle)
+        self.check_player_bounds()
+    
+    def rotate_player(self, direction):
+        """Rotate the player in the direction of x dir and y dir."""
+        y_axis = pygame.math.Vector2(0, -1)
+        rotation_angle = -y_axis.angle_to(direction)
+        self.direction = self.original_direction.rotate(rotation_angle)
         original_image = self.animation.get_image()
         original_center = self.rect.center
         self.surf = pygame.transform.rotate(original_image, rotation_angle)
         self.rect = self.surf.get_rect(center=original_center)
-        self.start_moving(mouse_pos)
-        # self.animation.rotate_center(rotation_angle)
-        self.check_player_bounds()
+        self.gun_pos = ((self.original_surf.get_height() / 2) * self.direction) + self.rect.center
+
 
     
     def update_firing(self):
