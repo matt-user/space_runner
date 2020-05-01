@@ -19,7 +19,7 @@ class Controller():
         """Initialze the display and prepare game objects."""
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
-        self.fps = 60.0
+        self.fps = 1.0
         self.pressed_keys = pygame.key.get_pressed()
         self.running = True
         # First level event

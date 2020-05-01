@@ -1,11 +1,18 @@
-# TODO
-make rotation and firing look better lol
+# TODO Currently
+Rotation:
+    once the player reaches the point I don't want to rotate the player to face the top
+    I want the player to rotate to face the point
+Firing:
+    the projectile fires from the midtop of the sprite
+    when the player rotates however this doesn't fire from the correct position on the sprite
 get the physics of the movement right
 set the mouse image
 
+# TODO Eventually
 fix hitboxes
 build whole first level
 
+# TODO Possibly
 Problem:
 Too hard to hit floater enemies
 Solution:
