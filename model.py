@@ -3,6 +3,8 @@ The model is responsible for keeping track of all of the game's entities."""
 
 import pygame
 
+from background import Background
+
 class Model():
     __instance = None
     @staticmethod
@@ -67,10 +69,7 @@ class Model():
     
     def get_player_center(self):
         """Returns the center of the player's position"""
-        return (
-            self.player.rect.x + (self.player.surf.get_width() / 2),
-            self.player.rect.y + (self.player.surf.get_height() / 2)
-        )
+        return self.player.rect.center
 
     def add_enemy(self, enemy):
         """Adds the enemy to the appropriate groups."""
