@@ -75,20 +75,13 @@ class Controller():
                 if event.key == K_SPACE:
                     player = Model.get_instance().get_player()
                     player.fire()
-                elif event.key == K_d:
-                    self.background.scroll(-5, 0, self.screen)
-                elif event.key == K_a:
-                    self.background.scroll(5, 0, self.screen)
-                elif event.key == K_w:
-                    self.background.scroll(0, 5, self.screen)
-                elif event.key == K_s:
-                    self.background.scroll(0, -5, self.screen)
 
     
     def update(self):
         """Update the game objects."""
         self.pressed_keys = pygame.key.get_pressed()
         Model.get_instance().update(self.pressed_keys)
+        self.background.update(self.pressed_keys, self.screen)
 
     
     def draw(self):
