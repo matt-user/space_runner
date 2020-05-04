@@ -4,8 +4,13 @@ import config
 
 from model import Model
 from enemy_factory import create_enemy
+from background import Background
 
 from pygame.locals import (
+    K_w,
+    K_s,
+    K_a,
+    K_d,
     KEYDOWN,
     K_SPACE,
     K_ESCAPE,
@@ -18,8 +23,10 @@ class Controller():
     def __init__(self):
         """Initialze the display and prepare game objects."""
         self.screen = pygame.display.get_surface()
+        self.background = Background()
+        self.background.set_tiles(self.screen)
         self.clock = pygame.time.Clock()
-        self.fps = 1.0
+        self.fps = 60.0
         self.pressed_keys = pygame.key.get_pressed()
         self.running = True
         # First level event
@@ -52,8 +59,6 @@ class Controller():
             self.update()
             self.draw()
             self.check_collisions()
-            # update the display
-            pygame.display.flip()
             self.clock.tick(self.fps)
 
     def check_events(self):
@@ -66,9 +71,19 @@ class Controller():
                 # self.load_level(1)
                 # don't load another first level
                 pygame.time.set_timer(self.FIRSTLEVEL, 0)
-            elif event.type == KEYDOWN and event.key == K_SPACE:
-                player = Model.get_instance().get_player()
-                player.fire()
+            elif event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    player = Model.get_instance().get_player()
+                    player.fire()
+                elif event.key == K_d:
+                    self.background.scroll(-5, 0, self.screen)
+                elif event.key == K_a:
+                    self.background.scroll(5, 0, self.screen)
+                elif event.key == K_w:
+                    self.background.scroll(0, 5, self.screen)
+                elif event.key == K_s:
+                    self.background.scroll(0, -5, self.screen)
+
     
     def update(self):
         """Update the game objects."""
@@ -78,12 +93,15 @@ class Controller():
     
     def draw(self):
         """Draw the game objects."""
-        self.screen.fill((0, 0, 0))		
+        # self.screen.fill((0, 0, 0))		
         # draw sprites on screen 
         # i dont like how all sprites is public
         # TODO: Implement a view class?
-        for entity in Model.get_instance().all_sprites:
-            self.screen.blit(entity.surf, entity.rect)
+        Model.get_instance().all_sprites.draw(self.screen)
+        pygame.display.update()
+        Model.get_instance().all_sprites.clear(self.screen, self.background.surface)
+        # for entity in Model.get_instance().all_sprites:
+        #     self.screen.blit(entity.surf, entity.rect)
     
     def check_collisions(self):
         """Check the game objects for collisions"""
