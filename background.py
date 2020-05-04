@@ -3,6 +3,13 @@
 import os
 import pygame
 
+from pygame.locals import (
+    K_w,
+    K_s,
+    K_a,
+    K_d
+)
+
 from utility import get_image
 
 class Background():
@@ -25,6 +32,17 @@ class Background():
         self.tile_height = self.tiles[0][0].get_height()
         screen.blit(self.tiles[0][0], [0, 0])
         self.surface = screen.copy()
+    
+    def update(self, pressed_keys, screen):
+        """Updates the background based on the pressed keys."""
+        if pressed_keys[K_d]:
+            self.scroll(-5, 0, screen)
+        if pressed_keys[K_a]:
+            self.scroll(5, 0, screen)
+        if pressed_keys[K_w]:
+            self.scroll(0, 5, screen)
+        if pressed_keys[K_s]:
+            self.scroll(0, -5, screen)
 
     def scroll(self, x, y, screen):
         """Scroll the background."""
