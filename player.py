@@ -31,15 +31,15 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
         MovingObjectMixin.__init__(self, Player.X_SPEED)
         # load all of the players animations
         self.animation = Animation(Player.ANIMATION_DELAY, 'assets', 'player')
-        self.surf = self.animation.get_image()
+        self.image = self.animation.get_image()
         # store the original image to minimze image loss when rotating
-        self.original_surf = self.surf
-        """self.rect = self.surf.get_rect(
+        self.original_image = self.image
+        self.rect = self.image.get_rect(
             center=(
                 config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT
             )
-        )"""
-        self.rect = self.surf.get_rect(center=(300, 300))
+        )
+        # self.rect = self.surf.get_rect(center=(300, 300))
         # variables for rotating player
         self.gun_pos = Vector2(*self.rect.midtop)
         self.direction = Vector2(0, 1)
@@ -55,17 +55,18 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
     def update(self, pressed_keys):
         """Updates all of the player's information"""
         self.update_firing()
-        self.update_mouse_movement()
-        if self.is_moving:
-            self.update_location()
-        # self.surf = self.animation.next_animation()
+        self.update_key_movement(pressed_keys)
+        # if self.is_moving:
+        #     self.update_location()
+        self.image = self.animation.next_animation()
 
     def get_pos(self):
         """Defines what the player's position means for moving object."""
-        return self.gun_pos # this is what I want to return
-        # return self.rect.midtop
+        #return self.gun_pos # this is what I want to return
+        return self.rect.midtop
 
-
+    # all of the movement functions and their subsidiaries will be changed
+    # depending on how I want the game to be played
     def update_mouse_movement(self):
         """Update the player's position and rotation based on the mouse position."""
         mouse_pos = Vector2(*pygame.mouse.get_pos())
@@ -82,9 +83,9 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
         self.direction = self.original_direction.rotate(rotation_angle)
         original_image = self.animation.get_image()
         original_center = self.rect.center
-        self.surf = pygame.transform.rotate(original_image, rotation_angle)
-        self.rect = self.surf.get_rect(center=original_center)
-        self.gun_pos = ((self.original_surf.get_height() / 2) * self.direction) + self.rect.center
+        self.image = pygame.transform.rotate(original_image, rotation_angle)
+        self.rect = self.image.get_rect(center=original_center)
+        self.gun_pos = ((self.original_image.get_height() / 2) * self.direction) + self.rect.center
 
 
     
@@ -102,16 +103,16 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
         # set the center to the players location
         if self.can_fire:
             self.can_fire = False
-            direction = get_direction(self.rect.midtop, pygame.mouse.get_pos())
-            if direction == (0, 0):
-                direction = (0, -1)
-            new_projectile = Projectile(center=self.rect.midtop, direction=direction)
+            # direction = get_direction(self.rect.midtop, pygame.mouse.get_pos())
+            # if direction == (0, 0):
+            #     direction = (0, -1)
+            new_projectile = Projectile(center=self.rect.midtop)
             Model.get_instance().add_player_projectile(new_projectile)
     
     def get_gun(self):
         """Return the players gun position."""
         return (
-            self.rect.x + (self.surf.get_width() / 2),
+            self.rect.x + (self.image.get_width() / 2),
             self.rect.y
         )
 
