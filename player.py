@@ -34,12 +34,12 @@ class Player(MovingObjectMixin, pygame.sprite.Sprite):
         self.image = self.animation.get_image()
         # store the original image to minimze image loss when rotating
         self.original_image = self.image
-        self.rect = self.image.get_rect(
+        """self.rect = self.image.get_rect(
             center=(
                 config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT
             )
-        )
-        # self.rect = self.surf.get_rect(center=(300, 300))
+        )"""
+        self.rect = self.image.get_rect(center=(config.SCREEN_WIDTH / 2, config.SCREEN_HEIGHT / 2))
         # variables for rotating player
         self.gun_pos = Vector2(*self.rect.midtop)
         self.direction = Vector2(0, 1)
